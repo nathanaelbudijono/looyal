@@ -3,10 +3,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 const defaultMeta = {
-  title: "Nathanael Budijono",
-  siteName: "Nathanael Budijono",
+  title: "Looyal Meet",
+  siteName: "Looyal Meet",
   description:
-    "Welcome to my digital notebook where I share what I'm learning about shipping great products, becoming a better developer and growing a career in tech.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit Proin tempor sollicitudin ipsum Mauris eu sapien erat Donec mattis scelerisque pharetra.",
   url: "https://nathanaelbudijono.vercel.app",
   type: "website",
   robots: "follow, index",
