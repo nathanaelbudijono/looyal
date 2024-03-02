@@ -5,7 +5,14 @@ import Layout from "@/components/layout";
 import WebCamPage from "./webcam";
 import DescriptionSection from "./description";
 
-const Waiting = () => {
+import { ParticipantProps } from "@/lib/slices/user/participantSlices";
+
+// participant props
+interface WaitingProps {
+  participantData: ParticipantProps | null;
+}
+
+const Waiting = ({ participantData }: WaitingProps) => {
   return (
     <main>
       <Layout className="flex items-center justify-center h-screen max-lg:flex-col max-lg:h-full">
@@ -13,7 +20,7 @@ const Waiting = () => {
           <WebCamPage />
         </section>
         <section className="w-1/4 max-lg:w-full max-lg:mt-5">
-          <DescriptionSection />
+          <DescriptionSection participantData={participantData} />
         </section>
       </Layout>
     </main>

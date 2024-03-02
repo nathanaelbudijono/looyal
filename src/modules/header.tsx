@@ -8,8 +8,14 @@ import { IconType } from "react-icons";
 
 import Link from "next/link";
 import { url } from "@/constant/env";
+import { UserProps } from "@/lib/slices/user/userSlices";
 
-export default function Header() {
+// user data props
+interface HeaderProps {
+  userData: UserProps | null;
+}
+
+export default function Header({ userData }: HeaderProps) {
   return (
     <main className="sticky top-0 z-10 shadow-sm px-6 py-4 max-md:px-4 bg-white">
       <section className="max-w-6xl mx-auto flex items-center justify-center sm:justify-between">
@@ -22,6 +28,11 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-5">
+          <div>
+            <Typography variant="p" color="muted">
+              {userData?.data?.name}
+            </Typography>
+          </div>
           <div className="flex space-x-3">
             {headerIcons.map((item, index) => {
               return <item.icon key={index} className="text-xl" />;
