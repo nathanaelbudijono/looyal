@@ -27,6 +27,7 @@ import { ToastAction } from "@/components/ui/toast";
 
 //icons
 import { AiOutlineLoading } from "react-icons/ai";
+import { credentialProps } from "@/type/credentials";
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -43,22 +44,29 @@ const Login = () => {
     const password = values.password;
     try {
       setIsLoading(true);
-      const res = await axios.post(
-        `${loginAPI}`,
-        {
-          username,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(res);
+      const res = await axios.post(`${loginAPI}`, {
+        username,
+        password,
+      });
+
+      //--- Start Region handle localStorage and sessionStorage ---//
+
       if (res.status === 200) {
+        await localStorage.setItem("credentials", JSON.stringify(res.data));
+        const credentialData = localStorage.getItem("credentials");
+        if (credentialData) {
+          const credentialToken: credentialProps = JSON.parse(credentialData);
+          await sessionStorage.setItem("credentials", credentialToken.token);
+        }
+        toast({
+          title: "Login succesfull!.",
+          description: "Redericting you to dashboard.",
+        });
         router.push("/dashboard");
       }
+
+      //--- End Region handle localStorage and sessionStorage ---//
     } catch (err: any) {
-      console.log(err);
       if (axios.isAxiosError(err)) {
         toast({
           variant: "destructive",
@@ -70,7 +78,7 @@ const Login = () => {
         toast({
           variant: "destructive",
           title: "Something went wrong!",
-          description: "An error occurred.",
+          description: "Internal server error.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }

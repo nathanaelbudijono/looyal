@@ -58,7 +58,6 @@ export default CarouselSection;
 interface CarauselContentProps {
   title: string;
   description: string;
-
   image: string;
 }
 
