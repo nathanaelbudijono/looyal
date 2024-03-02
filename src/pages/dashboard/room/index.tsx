@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import Seo from "@/components/seo";
 import Header from "@/modules/header";
 
@@ -6,6 +8,7 @@ import Waiting from "@/components/pages/main/room/waiting";
 
 const WaitingRoomPage = () => {
   useRedirect();
+
   return (
     <main>
       <Seo templateTitle="Waiting Room" />

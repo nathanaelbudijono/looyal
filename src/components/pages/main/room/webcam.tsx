@@ -13,12 +13,20 @@ import {
 } from "react-icons/ci";
 const WebCamPage = () => {
   const [isShowVideo, setIsShowVideo] = React.useState<boolean>(false);
-  const [isAudio, setIsAudio] = React.useState<boolean>(false);
+  const [isAudio, setIsAudio] = React.useState<boolean>(true);
   const videoElement = React.useRef(null);
 
   //--- Start region to control mic ---//
+
   function AudioHandler() {
-    setIsAudio(!isAudio);
+    try {
+      setIsAudio(!isAudio);
+      if (isAudio) {
+        navigator.mediaDevices.getUserMedia({ audio: true });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
   //--- End region to control mic ---//
 
