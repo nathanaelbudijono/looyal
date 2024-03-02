@@ -11,6 +11,7 @@ import {
   CiMicrophoneOn,
   CiMicrophoneOff,
 } from "react-icons/ci";
+
 const WebCamPage = () => {
   const [isShowVideo, setIsShowVideo] = React.useState<boolean>(false);
   const [isAudio, setIsAudio] = React.useState<boolean>(true);

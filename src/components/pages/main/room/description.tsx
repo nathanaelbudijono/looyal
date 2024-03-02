@@ -11,12 +11,16 @@ import { IconType } from "react-icons";
 
 import { ParticipantProps } from "@/lib/slices/user/participantSlices";
 
+import { useRouter } from "next/router";
+import { url } from "@/constant/env";
+
 // participant props
 interface WaitingProps {
   participantData: ParticipantProps | null;
 }
 
 const DescriptionSection = ({ participantData }: WaitingProps) => {
+  const router = useRouter();
   const participants = participantData?.data;
 
   // if not yet loaded
@@ -60,7 +64,11 @@ const DescriptionSection = ({ participantData }: WaitingProps) => {
         {participants?.length} participant is here.
       </Typography>
       <div className="flex space-x-3 mb-5">
-        <Button>Join Now</Button>
+        <Button
+          onClick={() => router.push(`${url}/dashboard/room/meet/ruangdiskusi`)}
+        >
+          Join Now
+        </Button>
         <Button className="flex gap-2 items-center">
           <PiPresentation />
           Present
