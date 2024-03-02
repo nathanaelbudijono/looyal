@@ -11,8 +11,6 @@ const useRedirect = () => {
       router.push("/");
     }
   }, []);
-
-  return sessionStorage.getItem("credentials");
 };
 
 export default useRedirect;

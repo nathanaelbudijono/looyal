@@ -27,7 +27,6 @@ import { ToastAction } from "@/components/ui/toast";
 
 //icons
 import { AiOutlineLoading } from "react-icons/ai";
-import { credentialProps } from "@/type/credentials";
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -53,13 +52,12 @@ const Login = () => {
 
       if (res.status === 200) {
         await localStorage.setItem("credentials", JSON.stringify(res.data));
-        const credentialData = localStorage.getItem("credentials");
-        if (credentialData) {
-          const credentialToken: credentialProps = JSON.parse(credentialData);
-          await sessionStorage.setItem("credentials", credentialToken.token);
-        }
+        await sessionStorage.setItem(
+          "credentials",
+          JSON.stringify(res.data.token)
+        );
         toast({
-          title: "Login succesfull!.",
+          title: "Login succesfull!",
           description: "Redericting you to dashboard.",
         });
         router.push("/dashboard");

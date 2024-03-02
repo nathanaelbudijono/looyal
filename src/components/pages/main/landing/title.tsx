@@ -18,7 +18,11 @@ import { IconType } from "react-icons";
 import { CiKeyboard } from "react-icons/ci";
 import { Framer } from "@/components/framer";
 
+import { useRouter } from "next/router";
+import { url } from "@/constant/env";
+
 const TitleSection = () => {
+  const router = useRouter();
   return (
     <main>
       <Framer>
@@ -53,7 +57,12 @@ const TitleSection = () => {
             <Input placeholder="Enter a code or link" className="pl-10" />
             <CiKeyboard className="text-xl absolute inset-y-2 left-2" />
           </div>
-          <Button variant="ghost">Join</Button>
+          <Button
+            variant="ghost"
+            onClick={() => router.push(`${url}/dashboard/room`)}
+          >
+            Join
+          </Button>
         </section>
       </Framer>
       <Framer delay={0.6}>

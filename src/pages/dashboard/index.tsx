@@ -4,12 +4,11 @@ import * as React from "react";
 import Landing from "@/components/pages/main/landing/landing";
 import Seo from "@/components/seo";
 import Header from "@/modules/header";
-import useRedirect from "@/lib/validation/checkSessionToken";
+import useRedirect from "@/hooks/useRedirect";
 
 const MainPage = () => {
-  const sessionToken = useRedirect();
-  if (!sessionToken) {
-  }
+  useRedirect();
+
   return (
     <main>
       <Seo templateTitle="Home" />

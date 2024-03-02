@@ -6,15 +6,21 @@ import { CgMenuGridO } from "react-icons/cg";
 import { CiCircleQuestion, CiChat1, CiSettings } from "react-icons/ci";
 import { IconType } from "react-icons";
 
+import Link from "next/link";
+import { url } from "@/constant/env";
+
 export default function Header() {
   return (
     <main className="sticky top-0 z-10 shadow-sm px-6 py-4 max-md:px-4 bg-white">
       <section className="max-w-6xl mx-auto flex items-center justify-center sm:justify-between">
-        <img
-          src="https://www.looyal.id/assets/compro/img/108 - looyal-logo.png"
-          alt="Looyol"
-          className="w-32 object-cover max-sm:hidden"
-        />
+        <Link href={`${url}/dashboard`}>
+          <img
+            src="https://www.looyal.id/assets/compro/img/108 - looyal-logo.png"
+            alt="Looyol"
+            className="w-32 object-cover max-sm:hidden"
+          />
+        </Link>
+
         <div className="flex items-center gap-5">
           <div className="flex space-x-3">
             {headerIcons.map((item, index) => {
