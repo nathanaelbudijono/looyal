@@ -35,7 +35,7 @@ import {
 } from "react-icons/ci";
 import { PiPresentation } from "react-icons/pi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { MdCallEnd } from "react-icons/md";
+import { MdCallEnd, MdOutlineCancelPresentation } from "react-icons/md";
 import { IoGridOutline } from "react-icons/io5";
 import { IoMdPeople, IoMdSend } from "react-icons/io";
 
@@ -48,15 +48,24 @@ interface myScreenProps {
 
 const MyScreen = ({ roomName, breakoutParticipant }: myScreenProps) => {
   const { chats, getChatParticipant } = chatAppStore();
+
   const [isShowVideo, setIsShowVideo] = React.useState<boolean>(false);
+  const [screenStream, setScreenStream] = React.useState<MediaStream | null>(
+    null
+  );
+  const [search, setSearch] = React.useState<string>("");
   const [sessionToken, setSessionToken] = React.useState<string | null>(null);
   const [isAudio, setIsAudio] = React.useState<boolean>(true);
+
   const videoElement = React.useRef(null);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
   const router = useRouter();
 
-  //--- Start region breakout---//
-
-  //--- End region breakout---//
+  //--- Start region user filter---//
+  const filterBreakoutParticipant = breakoutParticipant?.filter((item: any) =>
+    item?.name.toLowerCase().includes(search.toLowerCase())
+  );
+  //--- End region userfilter---//
 
   //--- Start region to control mic ---//
 
@@ -111,18 +120,52 @@ const MyScreen = ({ roomName, breakoutParticipant }: myScreenProps) => {
   }
   //--- Endregion get chat ---//
 
+  //--- Start region screen share ---//
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      setScreenStream(stream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Error starting screen sharing:", error);
+    }
+  };
+
+  const stopScreenSharing = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach((track) => track.stop());
+      setScreenStream(null);
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+  //--- End region screen share ---//
+
   return (
     <main>
-      <div className="w-full h-[85vh] py-10 relative max-md:h-[80vh]">
-        {isShowVideo ? (
-          <Webcam
-            audio={isAudio ? true : false}
-            ref={videoElement}
-            videoConstraints={videoConstraints}
-            className="rounded-md shadow-md w-full h-full bg-slate-900"
-          />
+      <div>
+        {screenStream ? (
+          <div className="w-full h-[85vh] py-10 relative max-md:h-[80vh]">
+            <video ref={videoRef} autoPlay />
+          </div>
         ) : (
-          <div className="w-full h-full bg-slate-900 rounded-md shadow-md"></div>
+          <div className="w-full h-[85vh] py-10 relative max-md:h-[80vh]">
+            {isShowVideo ? (
+              <Webcam
+                audio={isAudio ? true : false}
+                ref={videoElement}
+                videoConstraints={videoConstraints}
+                className="rounded-md shadow-md w-full h-full bg-slate-900"
+              />
+            ) : (
+              <div className="w-full h-full bg-slate-900 rounded-md shadow-md"></div>
+            )}
+          </div>
         )}
       </div>
 
@@ -142,9 +185,16 @@ const MyScreen = ({ roomName, breakoutParticipant }: myScreenProps) => {
             <CiMicrophoneOn onClick={AudioHandler} />
           )}
         </Button>
-        <Button size="icon" variant="ghost">
-          <PiPresentation />
-        </Button>
+        {screenStream ? (
+          <Button size="icon" variant="ghost" onClick={stopScreenSharing}>
+            <MdOutlineCancelPresentation />
+          </Button>
+        ) : (
+          <Button size="icon" variant="ghost" onClick={startScreenSharing}>
+            <PiPresentation />
+          </Button>
+        )}
+
         <DropdownMenu>
           <DropdownMenuTrigger className="h-10 w-10 text-typography-100 rounded-full border text-lg flex justify-center items-center">
             <IoGridOutline />
@@ -214,61 +264,69 @@ const MyScreen = ({ roomName, breakoutParticipant }: myScreenProps) => {
             <DialogHeader>
               <DialogTitle>{roomName} Participants.</DialogTitle>
               <DialogDescription>
-                {breakoutParticipant?.map((participant: any, index: number) => {
-                  return (
-                    <div
-                      key={index}
-                      className="flex justify-between space-y-2 items-center"
-                    >
-                      <Typography variant="p">{participant?.name}</Typography>
-                      <Button
-                        variant="ghost"
-                        className="text-lg"
-                        onClick={() => getBreakoutChat(participant?.id)}
+                <Input
+                  placeholder="Search by name"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="my-3"
+                />
+                {filterBreakoutParticipant?.map(
+                  (participant: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex justify-between space-y-2 items-center"
                       >
-                        <Dialog>
-                          <DialogTrigger>
-                            <CiChat1 />
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Chatroom with {participant?.name}
-                              </DialogTitle>
-                              <DialogDescription>
-                                <section>
-                                  {chats?.data?.map((item, index) => {
-                                    return (
-                                      <div
-                                        key={index}
-                                        className="p-2 shadow-sm rounded-md"
-                                      >
-                                        <Typography
-                                          variant="p"
-                                          className={`${
-                                            index % 2 === 0
-                                              ? "text-start"
-                                              : "text-end "
-                                          }`}
+                        <Typography variant="p">{participant?.name}</Typography>
+                        <Button
+                          variant="ghost"
+                          className="text-lg"
+                          onClick={() => getBreakoutChat(participant?.id)}
+                        >
+                          <Dialog>
+                            <DialogTrigger>
+                              <CiChat1 />
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>
+                                  Chatroom with {participant?.name}
+                                </DialogTitle>
+                                <DialogDescription>
+                                  <section>
+                                    {chats?.data?.map((item, index) => {
+                                      return (
+                                        <div
+                                          key={index}
+                                          className="p-2 shadow-sm rounded-md"
                                         >
-                                          {item?.chat}
-                                        </Typography>
-                                      </div>
-                                    );
-                                  })}
-                                  <div className="mt-5 relative">
-                                    <Input placeholder="Type something" />
-                                    <IoMdSend className="absolute inset-y-3 right-2" />
-                                  </div>
-                                </section>
-                              </DialogDescription>
-                            </DialogHeader>
-                          </DialogContent>
-                        </Dialog>
-                      </Button>
-                    </div>
-                  );
-                })}
+                                          <Typography
+                                            variant="p"
+                                            className={`${
+                                              index % 2 === 0
+                                                ? "text-start"
+                                                : "text-end "
+                                            }`}
+                                          >
+                                            {item?.chat}
+                                          </Typography>
+                                        </div>
+                                      );
+                                    })}
+                                    <div className="mt-5 relative">
+                                      <Input placeholder="Type something" />
+                                      <IoMdSend className="absolute inset-y-3 right-2" />
+                                    </div>
+                                  </section>
+                                </DialogDescription>
+                              </DialogHeader>
+                            </DialogContent>
+                          </Dialog>
+                        </Button>
+                      </div>
+                    );
+                  }
+                )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
