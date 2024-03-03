@@ -9,7 +9,10 @@ import { breakoutAppStore } from "@/lib/breakoutStore";
 
 import { useRouter } from "next/router";
 
+import useRedirect from "@/hooks/useRedirect";
+
 const MeetPage = () => {
+  useRedirect();
   const router = useRouter();
   const { getParticipant, participant } = userAppStore();
   const { getBreakout, breakout } = breakoutAppStore();

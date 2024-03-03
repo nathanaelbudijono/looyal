@@ -1,17 +1,20 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Folder Structure
 
-## Getting Started
+- Components
+  Store reusable components and page component.
+- Constant
+  Store env.
+- Lib
+  Zustand state managements
+- Modules
+  Constant components
+- Pages
+  Url sites
 
-First, run the development server:
+## Getting started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![Landing Page](/public/looyal.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Click join to access meeting
+
+## Thank you!
